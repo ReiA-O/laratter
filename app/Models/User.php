@@ -11,6 +11,10 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+    public function userTweets()
+    {
+        return $this->hasMany(Tweet::class);
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -41,4 +45,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function tweets()
+    {
+    return $this->belongsToMany(Tweet::class)->withTimestamps();
+    }
+
+    public function followings()
+    {
+    return $this->belongsToMany(self::class, "follows", "user_id", "following_id")->withTimestamps();
+    }
+
+    public function followers()
+    {
+    return $this->belongsToMany(self::class, "follows", "following_id", "user_id")->withTimestamps();
+    }
 }
